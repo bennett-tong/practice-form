@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Form
+    </title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style type="text/css">
+        body {
+            font-family: Helvetica, sans-serif;
+            display: flex;
+        }
+
+        #details {
+            display: flex;
+            flex-flow: column wrap;
+            width: 370px;
+            justify-content: flex-start;
+            margin: 50px auto;
+        }
+
+        .row {
+            display: flex;
+            flex-flow: row nowrap;
+            margin: 5px;
+            align-items: baseline;
+        }
+
+        .label {
+            flex: 1 0 auto;
+            display: block;
+            font-size: 18px;
+        }
+
+        .input {
+            border: 2px solid black;
+            flex: 0 0 200px;
+            height: 25px;
+            font-size: 16px;
+            padding-left: 3px;
+            border-radius:4px;
+        }
+
+        #lastrow {}
+
+        #submit {
+            width: 30%;
+            font-size: 18px;
+            margin-left:200px;
+            border-radius:4px;
+            border: 2px solid black;
+            background-color:lightgrey;
+        }
+        #success{
+            display:none;
+            font-size:18px;
+            color:green;
+        }
+        .errors{
+            color:red;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div id="details">
+        <div class="row">
+            <label class="label" for="email">Email</label>
+            <input class="input" type="text" id="email" name="email" placeholder="e.g. yourname@xyz.com">
+        </div>
+        <div class="row">
+            <label class="label" for="phone">Phone No.</label>
+            <input class="input" type="text" id="phone" name="phone" placeholder="e.g. +6598765432">
+        </div>
+        <div class="row">
+            <label class="label" for="password">Password</label>
+            <input class="input" type="password" id="password" name="password">
+        </div>
+
+        <div class="row">
+            <label class="label" for="pwConfirm">Confirm Password</label>
+            <input class="input" type="password" id="pwConfirm" name="pwConfirm">
+        </div>
+        <div class="row" id="lastrow">
+            <button id="submit">Sign Up!</button>
+        </div>
+        <p id = "success">Congrats! You have signed up!</p>
+        <div id = "errors">
+            
+                <p id = "missingFields"></p>    
+            <div id = "errorMsg"></div>
+            
+            
+
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function validateEmail(email) {
+            var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(String(email).toLowerCase());
+        }
+
+        function validatePhone(phone){
+            var digits = phone.length;
+            var digitsTen = (digits == 11)
+            var ctryCode = (phone.substring(0,1) == "+");
+            var isNumbers = $.isNumeric(phone.substring(1,digits));
+            return (ctryCode && isNumbers && digitsTen);
+        
+        }
+
+        function validatePW(pw){
+            var pwLength = (pw.length >= 6);
+            return pwLength;
+        }
+        
+        var isValidEmail = false;
+
+        $("#submit").click(function () {
+            var missingFields = "";
+            var errorMessage = "";
+            isValidEmail = validateEmail($("#email").val());
+           
+            
+            isValidPhone = validatePhone($("#phone").val());
+            
+
+            isValidPW = validatePW($("#password").val());
+            
+            isValidConfPW = ($("#password").val() == $("#pwConfirm").val());
+
+            if(!isValidEmail){
+               errorMessage += "<p>Email format is incorrect</p>";
+           }
+           if(!isValidPhone){
+               errorMessage+="<p>Phone no. starts with '+' and requires country code</p>";
+           }
+           if(!isValidPW){
+               errorMessage+= "<p>Password needs to have 6 characters or more</p>";
+           }
+           if(!isValidConfPW){
+               errorMessage+= "<p>Password confirmation does not match</p>";
+           }
+            $("#errorMsg").html(errorMessage);
+            
+            if ($("#email").val() == ""){
+                missingFields += "<br>Email";
+            }
+            if ($("#phone").val() == ""){
+                missingFields += "<br>Phone No.";
+            }
+            if ($("#password").val() == ""){
+                missingFields += "<br>Password";
+            }
+            if ($("#pwConfirm").val() == ""){
+                missingFields += "<br>Password Confirmation";
+            }
+            if (missingFields.length > 0){
+                var missingMsg = "The following fields must be filled up:";
+                missingMsg += missingFields;
+            }
+            
+            $("#missingFields").html(missingFields);
+
+            if((errorMessage.length == 0) && (missingFields.length == 0)){
+                $("#success").show();
+            }
+            missingFields = "";
+            errorMessage = "";
+            
+        });
+
+    </script>
+</body>
+
+</html>
